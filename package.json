@@ -1,0 +1,17 @@
+{
+  "name": "jp-sns-offensiveness-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "pack": "node build.mjs && python3 pack.py"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "4.3.0",
+    "onnxruntime-web": "1.27.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12"
+  }
+}

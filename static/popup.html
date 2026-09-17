@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body class="popup-body">
+  <div class="popup">
+    <h2>Offensiveness</h2>
+    <p id="modelStatus" class="small">確認中…</p>
+    <button id="openEvaluator" class="wide primary">投稿前チェックを開く</button>
+    <label class="toggle-row">
+      <input id="hoverToggle" type="checkbox">
+      <span>Xのポストをホバー評価</span>
+    </label>
+    <button id="prepare" class="wide">モデルを今すぐ準備</button>
+    <button id="clear" class="wide subtle">モデルキャッシュを削除</button>
+    <p class="tiny">モデルはHFから初回取得。投稿本文はローカル推論。</p>
+  </div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

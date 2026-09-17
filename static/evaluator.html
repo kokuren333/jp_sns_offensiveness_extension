@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Offensiveness Estimator</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body class="app-body">
+  <main class="composer-shell">
+    <header class="topbar">
+      <div>
+        <h1>投稿前チェック</h1>
+        <p>JP SNS Offensiveness Estimator · ローカル推論</p>
+      </div>
+      <span class="model-chip">INT8 · HF download</span>
+    </header>
+
+    <section class="tweet-card">
+      <div class="avatar">K</div>
+      <div class="composer">
+        <textarea id="tweetText" maxlength="5000"
+          placeholder="いまどうしてる？"></textarea>
+        <div class="composer-bottom">
+          <div class="fake-tools">
+            <span>▧</span><span>GIF</span><span>☻</span><span>⌖</span>
+          </div>
+          <div class="actions">
+            <span id="count" class="count">0 / 280</span>
+            <button id="evaluate">評価する</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="status" class="status">モデル未使用。初回評価時にHFからダウンロードします。</div>
+
+    <section id="result" class="result" hidden>
+      <div class="result-head">
+        <div>
+          <div id="scoreMain" class="score-main"></div>
+          <div id="scoreDetail" class="score-detail"></div>
+        </div>
+        <span id="decisionBadge" class="badge"></span>
+      </div>
+      <div class="meter"><div id="meterFill" class="meter-fill"></div></div>
+      <p class="note">
+        calibrated score と raw score を併記しています。カテゴリはHFの metrics.json に保存された
+        validation由来の review band / threshold を使用します。
+      </p>
+    </section>
+
+    <footer>
+      投稿本文は外部APIへ送信しません。HFへの通信はモデル・Tokenizer・metricsの取得時のみです。
+    </footer>
+  </main>
+  <script type="module" src="evaluator.js"></script>
+</body>
+</html>
