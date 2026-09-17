@@ -26,6 +26,22 @@ npm run build
 
 `chrome://extensions` で Developer mode を有効にし、「Load unpacked」から生成された `dist/` を選択します。配布用 ZIP は `npm run pack` で作成できます。
 
+### Chrome への取り込み
+
+1. `npm install` を実行します。
+2. `npm run build` を実行します。
+3. Chrome で `chrome://extensions` を開きます。
+4. 右上の **Developer mode** を有効にします。
+5. **Load unpacked** をクリックし、このプロジェクト内の `dist/` フォルダを選択します。
+6. ツールバーの拡張機能メニューから本拡張機能をピン留めすると、すぐに開けます。
+
+コードを変更した場合は、`npm run build` の後に拡張機能ページの再読み込みボタンを押してください。Content Script の変更を反映するには、対象のWebページも再読み込みします。
+
+公式ガイド:
+
+- [Chrome: Hello World extension / Load unpacked](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world)
+- [Chrome: 拡張機能のテストと Load unpacked](https://support.google.com/chrome/a/answer/2714278)
+
 初回利用時は、28MB のモデル本体だけでなく Tokenizer の取得、ONNX Runtime WASM の初期化、モデル展開も行われます。
 
 ## プライバシーと制限
@@ -33,6 +49,12 @@ npm run build
 評価対象の文章はローカルで処理し、推論 API へ送信しません。Hugging Face への通信はモデル関連ファイルの取得に限られます。
 
 ページへのアクセス権限を使用しますが、`chrome://`、Chrome ウェブストア、PDF ビューアなど Chrome が注入を禁止するページでは利用できません。
+
+### Microsoft Edge など Chromium 系ブラウザ
+
+Edge では `edge://extensions` を開き、**Developer mode** を有効にして **Load unpacked** から同じ `dist/` フォルダを選択します。インストール後、対象ページを再読み込みしてください。
+
+- [Microsoft Edge: Sideload an extension to install and test it locally](https://learn.microsoft.com/en-us/microsoft-edge/extensions/getting-started/extension-sideloading)
 
 ## ライセンス
 
