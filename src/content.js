@@ -8,6 +8,7 @@ chrome.storage.onChanged.addListener((changes) => {
 });
 
 const cache = new Map();
+const failedUntil = new Map();
 let timer = null;
 let tooltip = null;
 let activeArticle = null;
@@ -164,6 +165,7 @@ function renderTooltip(article, data) {
 async function analyzeArticle(article) {
   const text = getPrimaryTweetText(article);
   if (!text) return;
+  if ((failedUntil.get(text) || 0) > Date.now()) return;
   const seq = ++requestSeq;
   const tip = ensureTooltip(article);
 
@@ -178,11 +180,14 @@ async function analyzeArticle(article) {
     if (seq !== requestSeq || activeArticle !== article) return;
     if (!res?.ok) throw new Error(res?.error || "推論失敗");
     cache.set(text, res.result);
+    failedUntil.delete(text);
     renderTooltip(article, res.result);
   } catch (e) {
     if (seq !== requestSeq || activeArticle !== article) return;
+    failedUntil.set(text, Date.now() + 5000);
     tip.innerHTML = `<span class="jp-off-dot error"></span><span>解析失敗</span>`;
     tip.title = e.message;
+    scheduleChipRemoval(tip);
   }
 }
 
