@@ -14,6 +14,22 @@ let activeArticle = null;
 let requestSeq = 0;
 let selectionTooltip = null;
 let composePanel = null;
+let chipTimer = null;
+
+function removeChip() {
+  clearTimeout(chipTimer);
+  tooltip?.remove();
+  selectionTooltip?.remove();
+  tooltip = null;
+  selectionTooltip = null;
+}
+
+function scheduleChipRemoval(chip) {
+  clearTimeout(chipTimer);
+  chipTimer = setTimeout(() => {
+    if (tooltip === chip || selectionTooltip === chip) removeChip();
+  }, 6000);
+}
 
 function placeTooltip(tip, rect, width = 220) {
   const left = Math.max(8, Math.min(window.innerWidth - width - 8, rect.left));
@@ -78,13 +94,14 @@ document.addEventListener("mouseup", () => {
   if (!rect) return;
   if (!text || text.length < 2 || !rect.width && !rect.height) return;
   selectionTimer = setTimeout(async () => {
-    selectionTooltip?.remove();
+    removeChip();
     const tip = document.createElement("div");
     selectionTooltip = tip;
     tip.className = "jp-off-tooltip";
     tip.innerHTML = `<span class="jp-off-dot loading"></span><span>解析中…</span>`;
     placeTooltip(tip, rect);
     document.documentElement.appendChild(tip);
+    scheduleChipRemoval(tip);
     try { const r=await chrome.runtime.sendMessage({type:"INFER",text}); if (r?.ok && selectionTooltip === tip) { const cls=r.result.decision === "OFFENSIVE" ? "danger" : r.result.decision === "REVIEW" ? "review" : "safe"; tip.innerHTML=`<span class="jp-off-dot ${cls}"></span><strong>${(r.result.p_offensive*100).toFixed(1)}%</strong><span>${r.result.decision}</span>`; } else tip.remove(); } catch { tip.remove(); }
   }, 350);
 }, true);
@@ -120,7 +137,7 @@ function getPrimaryTweetText(article) {
 
 function ensureTooltip(article) {
   if (tooltip?.isConnected && activeArticle === article) return tooltip;
-  tooltip?.remove();
+  removeChip();
   activeArticle = article;
   tooltip = document.createElement("div");
   tooltip.className = "jp-off-tooltip";
@@ -128,6 +145,7 @@ function ensureTooltip(article) {
   const rect = article.getBoundingClientRect();
   placeTooltip(tooltip, rect);
   document.documentElement.appendChild(tooltip);
+  scheduleChipRemoval(tooltip);
   return tooltip;
 }
 
