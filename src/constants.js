@@ -1,5 +1,6 @@
 
 export const MODEL_ID = "kokuren/jp-sns-jev7-estimator";
+export const TOKENIZER_ID = "line-corporation/line-distilbert-base-japanese";
 export const MODEL_BASE = `https://huggingface.co/${MODEL_ID}/resolve/main`;
 export const MODEL_URL = `${MODEL_BASE}/model_int8.onnx?download=true`;
 export const MODEL_META_URL = `${MODEL_BASE}/model_meta.json`;
