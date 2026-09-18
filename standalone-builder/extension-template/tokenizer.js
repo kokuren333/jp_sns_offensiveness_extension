@@ -1,5 +1,5 @@
 import { mecabSurfaces, mecabReady } from './vendor/mecab/unidic-mecab.js';
-import { SentencePieceProcessor } from './vendor/sentencepiece/index.js';
+import createSentencePiece from './vendor/sentencepiece/index.js';
 
 let sp = null;
 let pieceToId = null;
@@ -21,7 +21,7 @@ function applyCommaRule(pieces) {
   for (const piece of pieces) {
     if (piece.length > 1 && piece.endsWith(',') && /[0-9]/.test(piece[piece.length - 2])) {
       let base = piece.slice(0, -1).replaceAll('▁', '');
-      let cur = sp.encodePieces(base);
+      let cur = sp.encodeWithOffsets(base).pieces;
       if (!piece.startsWith('▁') && cur.length && cur[0].startsWith('▁')) {
         if (cur[0] === '▁') cur = cur.slice(1);
         else cur[0] = cur[0].slice(1);
@@ -45,8 +45,11 @@ export async function initTokenizer() {
     fetch(chrome.runtime.getURL('assets/tokenizer/piece_to_id.json')).then(r => r.json()),
     fetch(chrome.runtime.getURL('assets/tokenizer/tokenizer_config.json')).then(r => r.json())
   ]);
-  sp = new SentencePieceProcessor();
-  await sp.loadFromB64StringModel(b64.trim());
+  const mod = await createSentencePiece();
+  sp = new mod.SentencePieceProcessor();
+  const bin = Uint8Array.from(atob(b64.trim()), c => c.charCodeAt(0));
+  const status = sp.loadFromSerializedProto(bin);
+  if (status) throw new Error(`SentencePiece初期化失敗: ${status}`);
   pieceToId = map;
   cfg = conf;
 }
@@ -58,7 +61,7 @@ export async function tokenize(text, maxLength = 192) {
   const pieces = [];
   for (let word of words) {
     word = word.toLowerCase();
-    const p = applyCommaRule(sp.encodePieces(spPreprocess(word)));
+    const p = applyCommaRule(sp.encodeWithOffsets(spPreprocess(word)).pieces);
     pieces.push(...p);
   }
   const unk = Number(pieceToId['<unk>'] ?? 0);
