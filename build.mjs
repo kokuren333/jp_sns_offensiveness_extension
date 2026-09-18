@@ -15,6 +15,7 @@ const common = {
   target: ["chrome120"],
   platform: "browser",
   format: "esm",
+  external: ["node:module", "node:fs", "fs", "module"],
 };
 
 await esbuild.build({
