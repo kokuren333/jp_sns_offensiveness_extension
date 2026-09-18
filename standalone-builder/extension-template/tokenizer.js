@@ -1,4 +1,3 @@
-import { mecabSurfaces, mecabReady } from './vendor/mecab/unidic-mecab.js';
 import createSentencePiece from './vendor/sentencepiece/index.js';
 
 let sp = null;
@@ -36,7 +35,6 @@ function applyCommaRule(pieces) {
 
 export async function initTokenizer() {
   if (sp && pieceToId && cfg) return;
-  await mecabReady();
   const [b64, map, conf] = await Promise.all([
     fetch(chrome.runtime.getURL('assets/tokenizer/spiece.model.b64')).then(r => {
       if (!r.ok) throw new Error('spiece.model.b64 missing; run prepare_standalone');
@@ -57,13 +55,8 @@ export async function initTokenizer() {
 export async function tokenize(text, maxLength = 192) {
   await initTokenizer();
   const normalized = normalizeBeforeMecab(text);
-  const words = await mecabSurfaces(normalized);
-  const pieces = [];
-  for (let word of words) {
-    word = word.toLowerCase();
-    const p = applyCommaRule(sp.encodeWithOffsets(spPreprocess(word)).pieces);
-    pieces.push(...p);
-  }
+  const words = [normalized];
+  const pieces = applyCommaRule(sp.encodeWithOffsets(spPreprocess(normalized)).pieces);
   const unk = Number(pieceToId['<unk>'] ?? 0);
   const cls = Number(pieceToId['[CLS]']);
   const sep = Number(pieceToId['[SEP]']);
