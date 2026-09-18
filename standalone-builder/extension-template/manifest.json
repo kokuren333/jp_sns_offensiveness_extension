@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "Doku-Chiwawa",
+  "version": "0.3.0",
+  "description": "MeCab + UniDic Lite + SentencePiece + ONNXを完全ローカル実行する日本語SNS 6軸チワワ判定拡張。",
+  "permissions": [
+    "storage",
+    "offscreen",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Doku-Chiwawa"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>",
+        "https://x.com/*",
+        "https://twitter.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "evaluator.html",
+        "evaluator.js",
+        "app.css",
+        "icons/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,10 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="app.css"></head>
+<body class="popup-body"><div class="popup">
+  <div class="brand"><img src="icons/icon48.png" alt=""><div><h2>Doku-Chiwawa</h2><div class="brand-sub">毒チワワ判定機</div></div></div>
+  <p id="modelStatus" class="small">確認中…</p>
+  <button id="openEvaluator" class="wide primary">投稿前チェックを開く</button>
+  <label class="toggle-row"><input id="hoverToggle" type="checkbox"><span>Xのポストをホバー評価</span></label>
+  <button id="prepare" class="wide">ローカルモデルを準備</button>
+  <button id="clear" class="wide subtle">モデルをメモリから解放</button>
+  <p class="tiny">MeCab + UniDic Lite + SentencePiece + jp-sns-jev7-estimator。本文もモデルも完全ローカルで処理します。</p>
+</div><script type="module" src="popup.js"></script></body></html>

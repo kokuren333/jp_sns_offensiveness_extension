@@ -1,5 +1,5 @@
-node_modules/
-dist/
-*.zip
-.env
-secrets/
+standalone-builder/Doku-Chiwawa-ready/
+standalone-builder/Doku-Chiwawa-ready.zip
+agnai-sentencepiece-js-*.tgz
+
+standalone-builder/extension-template/offscreen.js
