@@ -68,11 +68,11 @@ def main():
         # 2) SentencePiece WASM browser bundle.
         print('\n[2/6] SentencePiece WASM')
         spjs_dir=work/'spjs'
-        safe_extract_tar_bytes(npm_tarball('@mailwoman/sentencepiece-wasm','10.0.0'),spjs_dir)
+        safe_extract_tar_bytes(npm_tarball('@sctg/sentencepiece-js','1.3.3'),spjs_dir)
         pkg2=spjs_dir/'package'
-        sp_index=pkg2/'sentencepiece.mjs'
+        sp_index=pkg2/'dist/index.js'
         if not sp_index.exists(): raise FileNotFoundError(sp_index)
-        copy_if(sp_index, READY/'vendor/sentencepiece/index.js')
+        if not (READY/'vendor/sentencepiece/index.js').exists(): copy_if(sp_index, READY/'vendor/sentencepiece/index.js')
         copy_if(pkg2/'LICENSE', READY/'licenses/sentencepiece-js-LICENSE')
 
         # 3) UniDic Lite dictionary.
