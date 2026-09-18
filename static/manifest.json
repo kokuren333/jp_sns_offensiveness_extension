@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "JP SNS Offensiveness Estimator",
-  "version": "0.1.0",
-  "description": "Japanese SNS offensiveness scoring locally in your browser.",
+  "name": "Doku-Chiwawa",
+  "version": "2.0.0",
+  "description": "日本語SNSの毒・エロ傾向をローカル判定するチワワ拡張機能。",
   "permissions": [
     "storage",
     "offscreen",

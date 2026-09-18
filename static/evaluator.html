@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Offensiveness Estimator</title>
+  <title>Doku-Chiwawa</title>
   <link rel="stylesheet" href="app.css">
 </head>
 <body class="app-body">
@@ -11,7 +11,7 @@
     <header class="topbar">
       <div>
         <h1>投稿前チェック</h1>
-        <p>JP SNS Offensiveness Estimator · ローカル推論</p>
+        <p>Doku-Chiwawa · ローカル推論</p>
       </div>
       <span class="model-chip">INT8 · HF download</span>
     </header>
@@ -45,8 +45,7 @@
       </div>
       <div class="meter"><div id="meterFill" class="meter-fill"></div></div>
       <p class="note">
-        calibrated score と raw score を併記しています。カテゴリはHFの metrics.json に保存された
-        validation由来の review band / threshold を使用します。
+        毒性は敵対性4軸の最大値、エロ判定は下品・性的露出の最大値を0.5基準で判定しています。
       </p>
     </section>
 

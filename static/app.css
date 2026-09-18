@@ -31,3 +31,4 @@ button:hover{background:#f7f9f9}button:disabled{opacity:.55;cursor:wait}
 .note,footer{font-size:12px;color:#536471;line-height:1.6}footer{margin:16px 4px}
 .popup-body{width:310px;background:#fff}.popup{padding:16px}.popup h2{margin:0 0 6px}.small{font-size:12px;color:#536471;min-height:32px}
 .wide{width:100%;margin:5px 0}.subtle{border:0;color:#536471}.toggle-row{display:flex;align-items:center;gap:8px;margin:12px 4px;font-size:13px}.tiny{font-size:11px;color:#536471;line-height:1.45}
+.axis-bars{display:grid;gap:7px;margin-top:14px;padding-top:12px;border-top:1px solid #e6ecf0}.axis-row{display:grid;grid-template-columns:72px 1fr 45px;gap:8px;align-items:center;font-size:12px}.axis-row i{height:8px;background:#e6ecf0;border-radius:5px;overflow:hidden}.axis-row b{display:block;height:100%;background:#1d9bf0;border-radius:5px}.axis-row em{font-style:normal;text-align:right;color:#536471}

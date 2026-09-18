@@ -16,6 +16,10 @@ let requestSeq = 0;
 let selectionTooltip = null;
 let composePanel = null;
 let chipTimer = null;
+const axisLabels = { insult:"侮辱", threat:"脅迫", obscene:"下品", identity_attack:"属性攻撃", sexual_explicit:"性的露出", indirect_hostility:"間接的敵意" };
+const displayAxes = ["insult", "threat", "obscene", "identity_attack", "sexual_explicit", "indirect_hostility"];
+function histogram(data) { return `<div class="jp-off-hist">${displayAxes.map(k=>`<div class="jp-off-bar-row"><span>${axisLabels[k]}</span><i><b style="width:${Math.round((data.scores?.[k]||0)*100)}%"></b></i><em>${((data.scores?.[k]||0)*100).toFixed(0)}</em></div>`).join("")}</div>`; }
+function resultMarkup(data) { const cls=data.toxic&&data.erotic?"danger":data.toxic||data.erotic?"review":"safe"; return `<span class="jp-off-dot ${cls}"></span><strong>${data.decision}</strong>${histogram(data)}`; }
 
 function removeChip() {
   clearTimeout(chipTimer);
@@ -69,7 +73,7 @@ function ensureComposePanel() {
   async function evaluateDraft() {
     const text = input.value.trim(); if (!text) { result.hidden=true; status.textContent="入力中に自動評価"; return; }
     status.textContent = "解析中…";
-    try { const r = await chrome.runtime.sendMessage({ type: "INFER", text }); if (!r?.ok) throw Error(r?.error || "推論失敗"); const x=r.result; result.hidden=false; result.textContent=`攻撃性 ${(x.p_offensive*100).toFixed(1)}% · ${x.decision}`; status.textContent="自動評価済み"; } catch(e) { status.textContent=`エラー: ${e.message}`; }
+    try { const r = await chrome.runtime.sendMessage({ type: "INFER", text }); if (!r?.ok) throw Error(r?.error || "推論失敗"); const x=r.result; result.hidden=false; result.innerHTML=resultMarkup(x); status.textContent="自動評価済み"; } catch(e) { status.textContent=`エラー: ${e.message}`; }
   }
   input.addEventListener("input", () => { clearTimeout(inputTimer); inputTimer=setTimeout(evaluateDraft,350); });
   composePanel.querySelector(".jp-off-copy").onclick = async () => {
@@ -103,7 +107,7 @@ document.addEventListener("mouseup", () => {
     placeTooltip(tip, rect);
     document.documentElement.appendChild(tip);
     scheduleChipRemoval(tip);
-    try { const r=await chrome.runtime.sendMessage({type:"INFER",text}); if (r?.ok && selectionTooltip === tip) { const cls=r.result.decision === "OFFENSIVE" ? "danger" : r.result.decision === "REVIEW" ? "review" : "safe"; tip.innerHTML=`<span class="jp-off-dot ${cls}"></span><strong>${(r.result.p_offensive*100).toFixed(1)}%</strong><span>${r.result.decision}</span>`; } else tip.remove(); } catch { tip.remove(); }
+    try { const r=await chrome.runtime.sendMessage({type:"INFER",text}); if (r?.ok && selectionTooltip === tip) { tip.innerHTML=resultMarkup(r.result); } else tip.remove(); } catch { tip.remove(); }
   }, 350);
 }, true);
 
@@ -152,14 +156,7 @@ function ensureTooltip(article) {
 
 function renderTooltip(article, data) {
   const tip = ensureTooltip(article);
-  const cls = data.decision === "OFFENSIVE" ? "danger"
-    : data.decision === "REVIEW" ? "review" : "safe";
-  tip.innerHTML = `
-    <span class="jp-off-dot ${cls}"></span>
-    <strong>${(data.p_offensive * 100).toFixed(1)}%</strong>
-    <span>${data.decision}</span>
-    <small>raw ${(data.raw_score * 100).toFixed(1)}%</small>
-  `;
+  tip.innerHTML = resultMarkup(data);
 }
 
 async function analyzeArticle(article) {

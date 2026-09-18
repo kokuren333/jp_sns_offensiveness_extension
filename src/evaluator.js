@@ -53,14 +53,16 @@ button.addEventListener("click", async () => {
     if (!res?.ok) throw new Error(res?.error || "推論に失敗しました");
 
     const x = res.result;
-    scoreMain.textContent = `攻撃性 ${pct(x.p_offensive)}`;
-    scoreDetail.textContent =
-      `raw ${pct(x.raw_score)} / calibrated ${pct(x.p_offensive)} / ` +
-      `balanced threshold ${pct(x.balanced_threshold)}`;
+    scoreMain.textContent = x.decision;
+    scoreDetail.textContent = `毒性スコア ${pct(x.toxicity_score)} / コンテンツリスク ${pct(x.content_risk_score)}`;
     decisionBadge.textContent = x.decision;
-    decisionBadge.className = `badge ${decisionClass(x.decision)}`;
-    meter.style.width = `${Math.min(100, Math.max(0, x.p_offensive * 100))}%`;
-    meter.className = `meter-fill ${decisionClass(x.decision)}`;
+    decisionBadge.className = `badge ${x.toxic&&x.erotic?"danger":x.toxic||x.erotic?"review":"safe"}`;
+    meter.style.width = `${Math.max(x.toxicity_score, x.content_risk_score) * 100}%`;
+    meter.className = `meter-fill ${x.toxic&&x.erotic?"danger":x.toxic||x.erotic?"review":"safe"}`;
+    result.querySelector(".axis-bars")?.remove();
+    const labels={insult:"侮辱",threat:"脅迫",obscene:"下品",identity_attack:"属性攻撃",sexual_explicit:"性的露出",indirect_hostility:"間接的敵意"};
+    const bars=Object.entries(labels).map(([k,v])=>`<div class="axis-row"><span>${v}</span><i><b style="width:${x.scores[k]*100}%"></b></i><em>${pct(x.scores[k])}</em></div>`).join("");
+    result.insertAdjacentHTML("beforeend",`<div class="axis-bars">${bars}</div>`);
     result.hidden = false;
     status.textContent = "ローカル推論完了";
   } catch (e) {
