@@ -1,5 +1,5 @@
 {
-  "tokenizer_class": "AlbertTokenizer",
+  "tokenizer_class": "XLMRobertaTokenizer",
   "do_lower_case": true,
   "remove_space": true,
   "keep_accents": true,
