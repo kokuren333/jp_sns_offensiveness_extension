@@ -182,7 +182,7 @@ async function analyzeArticle(article) {
   } catch (e) {
     if (seq !== requestSeq || activeArticle !== article) return;
     failedUntil.set(text, Date.now() + 5000);
-    tip.innerHTML = `<span class="jp-off-dot error"></span><span>解析失敗</span>`;
+    tip.innerHTML = `<span class="jp-off-dot error"></span><span>解析失敗</span><small>${String(e.message || e).slice(0, 90)}</small>`;
     tip.title = e.message;
     scheduleChipRemoval(tip);
   }
